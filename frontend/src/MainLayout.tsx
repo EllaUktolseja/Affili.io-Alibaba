@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import './MainLayout.css';
 import { 
   LayoutGrid, 
@@ -9,6 +9,8 @@ import {
   Hash, 
   Settings 
 } from 'lucide-react';
+import NotificationPanel from './NotificationPanel';
+import SettingsPanel from './SettingsPanel';
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -17,6 +19,8 @@ interface MainLayoutProps {
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children, activeTab, setActiveTab }) => {
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   // Scanner diletakkan di urutan kedua, sebelum Simulator
   const navItems = [
     { label: 'Overview', icon: LayoutGrid },
@@ -41,11 +45,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, activeTab, setActiveT
         </div>
 
         <div className="navbar-right">
-          <div className="notif-icon">
+          <div className="notif-icon" onClick={() => setNotifOpen(!notifOpen)}>
             <Bell size={20} />
             <span className="notif-dot"></span>
           </div>
-          <Settings size={20} className="settings-icon" />
+          <Settings size={20} className="settings-icon" onClick={() => setSettingsOpen(!settingsOpen)} />
           <div className="divider"></div>
           <div className="premium-badge">
             <span className="plan-text">Premium Plan</span>
@@ -105,6 +109,20 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, activeTab, setActiveT
           © 2026 TrendPulse AI by Team SYNC1. All rights reserved.
         </div>
       </footer>
+
+      {/* --- NOTIFICATION & SETTINGS PANELS --- */}
+      <NotificationPanel 
+        isOpen={notifOpen} 
+        onClose={() => setNotifOpen(false)}
+        onShowAll={() => {
+          setNotifOpen(false);
+          setActiveTab('Alerts');
+        }}
+      />
+      <SettingsPanel 
+        isOpen={settingsOpen} 
+        onClose={() => setSettingsOpen(false)}
+      />
     </div>
   );
 };

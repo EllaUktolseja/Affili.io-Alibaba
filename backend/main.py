@@ -4,15 +4,25 @@ import json
 import os
 import re
 from dotenv import load_dotenv
+from fastapi.middleware.cors import CORSMiddleware
 from analysis_engine import calculate_potential_income
 from analysis_engine import calculate_opportunity_score
 from market_service import get_market_overview, refresh_market_data
 from alert_engine import generate_market_alerts
 from hastag_engine import get_top_trending_hashtags
-
+from paylabs_service import analyze as paylabs_analyze 
 load_dotenv()
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 QWEN_API_KEY = os.getenv("QWEN_API_KEY") 
 QWEN_BASE_URL = os.getenv("QWEN_BASE_URL")
@@ -212,3 +222,51 @@ def generate_ai_only_hashtags(product_name: str):
         "strategy": "AI-only (conversion focused)",
         "ai_recommendation": ai_result
     }
+
+
+@app.get("/paylabs")
+def paylabs_dashboard():
+
+    data = paylabs_analyze()
+
+    prompt = f"""
+    Kamu adalah AI Senior Fintech Business Analyst.
+
+    Berikut data performa transaksi:
+
+    Aggregated Data:
+    - Revenue: {data["aggregated_data"]["revenue"]}
+    - Margin: {data["aggregated_data"]["margin"]}
+    - Total Transactions: {data["aggregated_data"]["total_transactions"]}
+    - Paid: {data["aggregated_data"]["paid"]}
+    - Refunded: {data["aggregated_data"]["refunded"]}
+    - Refund Rate: {data["aggregated_data"]["refund_rate_percent"]}%
+    - Weekly Growth: {data["weekly_growth_percent"]}%
+    - Risk Label: {data["risk_label"]}
+    - Business Score: {data["business_score"]}/100
+
+    Top 3 Products:
+    {data["ranking_product"][:3]}
+
+    Product Trend Movement:
+    {data["product_trend_movement"][:3]}
+
+    Berikan:
+    1. Executive summary (max 4 kalimat)
+    2. Penjelasan arah pertumbuhan
+    3. Komentar kesehatan refund
+    4. Rekomendasi strategi singkat
+
+    Gunakan tone profesional dan strategis.
+    """
+
+    ai_text = call_qwen(prompt)
+
+    data["ai_executive_insight"] = ai_text
+
+    return data
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

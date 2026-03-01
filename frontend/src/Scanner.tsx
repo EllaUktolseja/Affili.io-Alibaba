@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { RefreshCw, Loader2, ExternalLink, Database } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { RefreshCw, Loader2, ExternalLink, Database, TrendingUp, DollarSign, ShoppingCart, AlertTriangle } from 'lucide-react';
 import './Scanner.css'; // Import file CSS murni di sini
 
 // Interface data
@@ -13,16 +13,55 @@ interface Product {
   roi: string;
 }
 
-const Scanner: React.FC = () => {
+interface PayLabsMetrics {
+  total_transactions: number;
+  paid: number;
+  refunded: number;
+  refund_rate_percent: number;
+  revenue: number;
+  margin: number;
+}
+
+interface ScannerProps {
+  onViewTrendAnalysis: () => void;
+}
+
+const Scanner: React.FC<ScannerProps> = ({ onViewTrendAnalysis }) => {
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [products, setProducts] = useState<Product[]>([]);
+  const [paylabsMetrics, setPaylabsMetrics] = useState<PayLabsMetrics | null>(null);
+  const [metricsLoading, setMetricsLoading] = useState(false);
+
+  useEffect(() => {
+    // Fetch Paylabs metrics on component mount
+    fetchPaylabsMetrics();
+  }, []);
+
+  const fetchPaylabsMetrics = async () => {
+    setMetricsLoading(true);
+    try {
+      const response = await fetch('http://localhost:8000/paylabs');
+      const result = await response.json();
+      if (result.aggregated_data) {
+        setPaylabsMetrics(result.aggregated_data);
+      }
+    } catch (error) {
+      console.error('Error fetching Paylabs metrics:', error);
+    } finally {
+      setMetricsLoading(false);
+    }
+  };
 
   const handleSync = (): void => {
     setIsSyncing(true);
-    setTimeout(() => {
+    // Fetch products and metrics simultaneously
+    Promise.all([
+      new Promise(resolve => setTimeout(() => resolve(null), 2000))
+    ]).then(() => {
       setProducts(MOCK_DATA);
+      fetchPaylabsMetrics();
       setIsSyncing(false);
-    }, 2000);
+    });
   };
 
   return (
@@ -40,6 +79,66 @@ const Scanner: React.FC = () => {
       </header>
 
       <main>
+        {/* Paylabs Metrics Summary */}
+        {paylabsMetrics && !metricsLoading && (
+          <div className="metricsSection">
+            <h2 className="metricsTitle">💰 Business Performance (Paylabs)</h2>
+            <div className="metricsGrid">
+              <div className="metricCard">
+                <div className="metricIcon" style={{ background: 'linear-gradient(135deg, #93c5fd, #60a5fa)' }}>
+                  <DollarSign size={24} color="white" />
+                </div>
+                <div className="metricContent">
+                  <span className="metricLabel">Total Revenue</span>
+                  <span className="metricValue">Rp {(paylabsMetrics.revenue / 1000).toFixed(0)}k</span>
+                </div>
+              </div>
+
+              <div className="metricCard">
+                <div className="metricIcon" style={{ background: 'linear-gradient(135deg, #86efac, #22c55e)' }}>
+                  <TrendingUp size={24} color="white" />
+                </div>
+                <div className="metricContent">
+                  <span className="metricLabel">Profit Margin</span>
+                  <span className="metricValue">Rp {(paylabsMetrics.margin / 1000).toFixed(0)}k</span>
+                </div>
+              </div>
+
+              <div className="metricCard">
+                <div className="metricIcon" style={{ background: 'linear-gradient(135deg, #c084fc, #9333ea)' }}>
+                  <ShoppingCart size={24} color="white" />
+                </div>
+                <div className="metricContent">
+                  <span className="metricLabel">Transactions</span>
+                  <span className="metricValue">{paylabsMetrics.total_transactions}</span>
+                </div>
+              </div>
+
+              <div className="metricCard">
+                <div className="metricIcon" style={{ background: paylabsMetrics.refund_rate_percent > 5 ? 'linear-gradient(135deg, #fca5a5, #ef4444)' : 'linear-gradient(135deg, #fbbf24, #f59e0b)' }}>
+                  {paylabsMetrics.refund_rate_percent > 5 ? <AlertTriangle size={24} color="white" /> : <ShoppingCart size={24} color="white" />}
+                </div>
+                <div className="metricContent">
+                  <span className="metricLabel">Refund Rate</span>
+                  <span className="metricValue">{paylabsMetrics.refund_rate_percent}%</span>
+                  {paylabsMetrics.refund_rate_percent > 5 && <span className="metricWarning">⚠️ High</span>}
+                </div>
+              </div>
+            </div>
+            <button className="viewDetailsBtn" onClick={onViewTrendAnalysis}>
+              <span>View Detailed Analytics</span>
+              <ExternalLink size={16} />
+            </button>
+          </div>
+        )}
+
+        {metricsLoading && (
+          <div className="metricsSection" style={{ opacity: 0.5 }}>
+            <h2 className="metricsTitle">💰 Loading Business Performance...</h2>
+          </div>
+        )}
+
+        {/* Original content */}
         {isSyncing ? (
           <div className="loadingArea">
             <Loader2 className="animateSpin" size={40} color="#9333ea" />
@@ -85,7 +184,7 @@ const Scanner: React.FC = () => {
                   <span style={{ color: '#c084fc', fontWeight: 'bold' }}>{item.roi}</span>
                 </div>
 
-                <button className="detailBtn">
+                <button className="detailBtn" onClick={onViewTrendAnalysis}>
                   Analyze Trend <ExternalLink size={14} style={{ marginLeft: '8px' }} />
                 </button>
               </div>

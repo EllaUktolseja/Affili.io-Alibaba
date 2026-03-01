@@ -143,75 +143,105 @@ const MarketOverview: React.FC = () => {
     <div className="dashboard-wrapper">
       <main className="content-body">
         <div className="overview-header">
-          <h2>Market Overview</h2>
-          <p>Real-time market trends and category performance</p>
-        </div>
-
-        {/* Momentum Card */}
-        <div className="momentum-card">
-          <div className="momentum-content">
-            <div className="momentum-icon">
-              <Activity size={32} />
-            </div>
-            <div>
-              <p className="momentum-label">Market Momentum</p>
-              <h3 className="momentum-value">{data.avg_trend_velocity.momentum}</h3>
-              <p className="momentum-percent">{data.avg_trend_velocity.value_percent > 0 ? '+' : ''}{data.avg_trend_velocity.value_percent.toFixed(2)}% avg velocity</p>
-            </div>
-          </div>
-          <div className={`momentum-badge ${data.avg_trend_velocity.momentum.toLowerCase().replace(' ', '-')}`}>
-            {data.avg_trend_velocity.value_percent > 10 ? '🔥' : data.avg_trend_velocity.value_percent > 0 ? '📈' : '📉'}
+          <div>
+            <h2>Market Trend Overview</h2>
+            <p>Real-time insights into category performance and trend velocity</p>
           </div>
         </div>
 
-        {/* Rising and Declining */}
-        <div className="categories-grid">
-          {/* Rising Categories */}
-          <div className="category-section">
-            <div className="section-header">
-              <TrendingUp size={20} className="icon-green" />
-              <h3>Rising Categories</h3>
-            </div>
-            <div className="category-list">
-              {data.rising_categories.map((cat, idx) => (
-                <div key={idx} className="category-item rising">
-                  <div className="category-info">
-                    <p className="category-name">{cat.category}</p>
-                    <div className="category-metrics">
-                      <span className="growth-percent">+{cat.growth_percent.toFixed(2)}%</span>
-                      <span className={`change ${cat.change_from_yesterday > 0 ? 'positive' : 'negative'}`}>
-                        {cat.change_from_yesterday > 0 ? '↑' : '↓'} {Math.abs(cat.change_from_yesterday)}
-                      </span>
-                    </div>
-                  </div>
+        {/* KPI Cards Grid - Main Focus */}
+        <div className="kpi-grid">
+          {/* Rising Categories KPI */}
+          <div className="card">
+            <div className="kpi-card">
+              <div className="kpi-info">
+                <label>RISING CATEGORIES</label>
+                <div className="kpi-value">{data.rising_categories.length}</div>
+                <div className="trend up">
+                  <span>↑ <span style={{color:'#22d3a7', fontWeight:700}}>+{data.rising_categories.reduce((sum, cat) => sum + cat.change_from_yesterday, 0)}</span> from yesterday</span>
                 </div>
-              ))}
+              </div>
+              <div className="kpi-icon-bg purple">
+                <TrendingUp size={32} />
+              </div>
             </div>
           </div>
 
-          {/* Declining Categories */}
-          <div className="category-section">
-            <div className="section-header">
-              <TrendingDown size={20} className="icon-red" />
-              <h3>Declining Categories</h3>
-            </div>
-            <div className="category-list">
-              {data.declining_categories.map((cat, idx) => (
-                <div key={idx} className="category-item declining">
-                  <div className="category-info">
-                    <p className="category-name">{cat.category}</p>
-                    <div className="category-metrics">
-                      <span className="growth-percent">{cat.growth_percent.toFixed(2)}%</span>
-                      <span className={`change ${cat.change_from_yesterday < 0 ? 'negative' : 'positive'}`}>
-                        {cat.change_from_yesterday < 0 ? '↓' : '↑'} {Math.abs(cat.change_from_yesterday)}
-                      </span>
-                    </div>
-                  </div>
+          {/* Declining Categories KPI */}
+          <div className="card">
+            <div className="kpi-card">
+              <div className="kpi-info">
+                <label>DECLINING CATEGORIES</label>
+                <div className="kpi-value">{data.declining_categories.length}</div>
+                <div className="trend down">
+                  <span>↓ <span style={{color:'#fbbf24', fontWeight:700}}>{data.declining_categories.reduce((sum, cat) => sum + cat.change_from_yesterday, 0)}</span> from yesterday</span>
                 </div>
-              ))}
+              </div>
+              <div className="kpi-icon-bg blue">
+                <TrendingDown size={32} />
+              </div>
+            </div>
+          </div>
+
+          {/* Avg Trend Velocity KPI */}
+          <div className="card">
+            <div className="kpi-card">
+              <div className="kpi-info">
+                <label>AVG TREND VELOCITY</label>
+                <div className="kpi-value">{data.avg_trend_velocity.value_percent.toFixed(1)}</div>
+                <div className="trend up">
+                  <span style={{color:'#22d3a7', fontWeight:700}}>{data.avg_trend_velocity.momentum}</span>
+                </div>
+              </div>
+              <div className="kpi-icon-bg green">
+                <Activity size={32} />
+              </div>
             </div>
           </div>
         </div>
+
+        {/* Category Details Section */}
+        {/* Rising Categories */}
+<div className="category-section centered">
+  <div className="section-header centered">
+    <TrendingUp size={20} className="icon-green" />
+    <h3>Rising Categories</h3>
+  </div>
+  <div className="category-list-wrapper centered">
+    {data.rising_categories.map((cat, idx) => (
+      <div key={idx} className="category-pill rising">
+        <span className="pill-name">{cat.category}</span>
+        <div className="pill-stats">
+          <span className="pill-growth">+{cat.growth_percent.toFixed(1)}%</span>
+          <span className="pill-change">
+            {cat.change_from_yesterday > 0 ? '↑' : '↓'} {Math.abs(cat.change_from_yesterday)}
+          </span>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
+{/* Declining Categories */}
+<div className="category-section centered">
+  <div className="section-header centered">
+    <TrendingDown size={20} className="icon-red" />
+    <h3>Declining Categories</h3>
+  </div>
+  <div className="category-list-wrapper centered">
+    {data.declining_categories.map((cat, idx) => (
+      <div key={idx} className="category-pill declining">
+        <span className="pill-name">{cat.category}</span>
+        <div className="pill-stats">
+          <span className="pill-growth">{cat.growth_percent.toFixed(1)}%</span>
+          <span className="pill-change">
+            {cat.change_from_yesterday < 0 ? '↓' : '↑'} {Math.abs(cat.change_from_yesterday)}
+          </span>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
 
         {/* Two Column Layout */}
         <div className="two-column-layout">

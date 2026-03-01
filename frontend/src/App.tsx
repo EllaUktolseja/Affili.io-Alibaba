@@ -5,16 +5,23 @@ import Scanner from './Scanner'; // Import komponen baru
 import IncomeSimulator from './IncomeSimulator';
 import AlertInsight from './AlertInsight';
 import HashtagAnalysis from './HashtagAnalysis';
+import TrendAnalysisDetail from './TrendAnalysisDetail';
 
 function App() {
   const [currentTab, setCurrentTab] = useState<string>('Overview');
+  const [showTrendDetail, setShowTrendDetail] = useState(false);
 
   const renderContent = () => {
+    // Show trend detail if user clicked "View Trend Analysis"
+    if (showTrendDetail) {
+      return <TrendAnalysisDetail onBack={() => setShowTrendDetail(false)} />;
+    }
+
     switch (currentTab) {
       case 'Overview': 
         return <MarketOverview />;
       case 'Scanner': 
-        return <Scanner />; // Render Scanner di sini
+        return <Scanner onViewTrendAnalysis={() => setShowTrendDetail(true)} />; // Pass callback
       case 'Simulator': 
         return <IncomeSimulator />;
       case 'Alerts': 
