@@ -21,10 +21,9 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ children, activeTab, setActiveTab }) => {
   const [notifOpen, setNotifOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
-  // Scanner diletakkan di urutan kedua, sebelum Simulator
   const navItems = [
     { label: 'Overview', icon: LayoutGrid },
-    { label: 'Scanner', icon: Search }, // <-- Scanner sekarang di sini
+    { label: 'Scanner', icon: Search }, 
     { label: 'Alerts', icon: Bell },
     { label: 'Simulator', icon: Calculator },
     { label: 'Hashtags', icon: Hash },

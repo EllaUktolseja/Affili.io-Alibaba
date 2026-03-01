@@ -34,8 +34,7 @@ const AlertInsight: React.FC = () => {
         return res.json();
       })
       .then((data) => {
-  // Backend kamu mengirim list langsung atau dalam objek? 
-  // Jika res.json(alerts), maka data adalah array. Jika res.json({"alerts": alerts}), gunakan data.alerts.
+  
   const alertList = Array.isArray(data) ? data : (data.alerts || []);
   
   setAlerts(alertList.map((alert: any, idx: number) => {
@@ -50,8 +49,7 @@ const AlertInsight: React.FC = () => {
     return {
       id: idx + 1,
       type: typeMap[alert.alert_type] || 'trend',
-      title: alert.alert_type.replace(/_/g, ' '), // Mengubah TREND_SPIKE jadi TREND SPIKE
-      severity: alert.severity,
+      title: alert.alert_type.replace(/_/g, ' '), 
       description: `Detected issues in ${alert.category || alert.product || 'Market Data'}`,
       time: alert.detected_at,
       metrics: {

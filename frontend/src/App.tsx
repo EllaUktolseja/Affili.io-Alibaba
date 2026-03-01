@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MainLayout from './MainLayout';
 import MarketOverview from './MarketOverview';
-import Scanner from './Scanner'; // Import komponen baru
+import Scanner from './Scanner';
 import IncomeSimulator from './IncomeSimulator';
 import AlertInsight from './AlertInsight';
 import HashtagAnalysis from './HashtagAnalysis';
@@ -12,7 +12,6 @@ function App() {
   const [showTrendDetail, setShowTrendDetail] = useState(false);
 
   const renderContent = () => {
-    // Show trend detail if user clicked "View Trend Analysis"
     if (showTrendDetail) {
       return <TrendAnalysisDetail onBack={() => setShowTrendDetail(false)} />;
     }

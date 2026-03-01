@@ -44,12 +44,9 @@ const HashtagAnalysis: React.FC = () => {
         return res.json();
       })
       .then((data) => {
-        // Transform backend data ke format UI
         const transformedHashtags = data.hashtags.map((ht: any, index: number) => {
-          // Parse posts count (usually comes as "2.4M", "1.2K", etc.)
           const postsNum = parseInt(ht.posts.replace(/[MK]/g, '')) * (ht.posts.includes('M') ? 1000000 : 1000);
           
-          // Calculate synthetic engagement metrics based on posts count
           const baseEngagement = Math.max(5, Math.min(9, (postsNum / 500000) * 10));
           const sentiment = Math.floor(Math.random() * 20 + 75); // 75-95%
           const engagement = (baseEngagement + (Math.random() * 2 - 1)).toFixed(1);

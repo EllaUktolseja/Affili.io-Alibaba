@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, Loader2, ExternalLink, Database, TrendingUp, DollarSign, ShoppingCart, AlertTriangle } from 'lucide-react';
-import './Scanner.css'; // Import file CSS murni di sini
+import './Scanner.css'; 
 
 // Interface data
 interface Product {
