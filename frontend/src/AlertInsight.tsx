@@ -34,25 +34,41 @@ const AlertInsight: React.FC = () => {
         return res.json();
       })
       .then((data) => {
-        const alertList = data.alerts || [];
-        setAlerts(alertList.map((alert: any, idx: number) => ({
-          id: idx + 1,
-          type: alert.type || 'trend',
-          title: alert.title || 'Alert',
-          severity: alert.severity || 'High',
-          description: alert.description || '',
-          time: alert.time || 'Just now',
-          metrics: alert.metrics || {},
-          aiInsight: alert.ai_insight || 'No insight available',
-          ...alert
-        })));
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Alert fetch error:', err);
-        setError(err.message);
-        setLoading(false);
-      });
+  // Backend kamu mengirim list langsung atau dalam objek? 
+  // Jika res.json(alerts), maka data adalah array. Jika res.json({"alerts": alerts}), gunakan data.alerts.
+  const alertList = Array.isArray(data) ? data : (data.alerts || []);
+  
+  setAlerts(alertList.map((alert: any, idx: number) => {
+    // Mapping tipe alert dari backend ke icon frontend
+    const typeMap: { [key: string]: 'trend' | 'saturation' | 'refund' | 'opportunity' } = {
+      'TREND_SPIKE': 'trend',
+      'MARKET_SATURATION': 'saturation',
+      'HIGH_REFUND_RISK': 'refund',
+      'CONVERSION_DROP': 'opportunity'
+    };
+
+    return {
+      id: idx + 1,
+      type: typeMap[alert.alert_type] || 'trend',
+      title: alert.alert_type.replace(/_/g, ' '), // Mengubah TREND_SPIKE jadi TREND SPIKE
+      severity: alert.severity,
+      description: `Detected issues in ${alert.category || alert.product || 'Market Data'}`,
+      time: alert.detected_at,
+      metrics: {
+        // Ambil data sesuai key di Python kamu
+        growth: alert.trend_growth ? `+${alert.trend_growth.toFixed(1)}%` : 
+                alert.market_share_percent ? `${alert.market_share_percent}% Share` : 'N/A',
+        velocity: alert.velocity_score ? alert.velocity_score.toFixed(1) : 
+                  alert.refund_rate ? `Risk: ${(alert.refund_rate * 100).toFixed(1)}%` : 'N/A',
+        score: alert.score,
+        category: alert.category || alert.product || 'N/A',
+        detected: alert.detected_at
+      },
+      aiInsight: alert.ai_insight || 'AI recommends immediate review of this category.'
+    };
+  }));
+  setLoading(false);
+});
   }, []);
 
   const toggleExpand = (id: number) => {
