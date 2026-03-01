@@ -41,8 +41,8 @@ const IncomeSimulator: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    
-    fetch(`http://localhost:8000/analyze?user_id=${userId}&product_name=${productName}`)
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    fetch(`${API_BASE_URL}/analyze?user_id=${userId}&product_name=${productName}`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch analysis data');
         return res.json();

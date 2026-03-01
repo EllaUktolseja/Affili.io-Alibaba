@@ -28,7 +28,8 @@ const AlertInsight: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch('http://localhost:8000/market-alerts')
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    fetch(`${API_BASE_URL}/market-alerts`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch alerts');
         return res.json();

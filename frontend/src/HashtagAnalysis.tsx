@@ -37,8 +37,8 @@ const HashtagAnalysis: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    
-    fetch(`http://localhost:8000/hashtags/trending?limit=5`)
+    const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+    fetch(`${API_BASE_URL}/hashtags/trending?limit=5`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch hashtags');
         return res.json();
@@ -90,7 +90,8 @@ const HashtagAnalysis: React.FC = () => {
     setAiError(null);
     
     try {
-      const response = await fetch(`http://localhost:8000/hashtags/generate?product_name=${encodeURIComponent(productName)}`);
+      const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_BASE_URL}/hashtags/generate?product_name=${encodeURIComponent(productName)}`);
       if (!response.ok) throw new Error('Failed to generate hashtags');
       
       const data = await response.json();

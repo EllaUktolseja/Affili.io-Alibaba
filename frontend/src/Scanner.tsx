@@ -40,7 +40,8 @@ const Scanner: React.FC<ScannerProps> = ({ onViewTrendAnalysis }) => {
   const fetchPaylabsMetrics = async () => {
     setMetricsLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/paylabs');
+      const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_BASE_URL}/paylabs`);
       const result = await response.json();
       if (result.aggregated_data) {
         setPaylabsMetrics(result.aggregated_data);

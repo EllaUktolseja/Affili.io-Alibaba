@@ -42,7 +42,8 @@ const TrendAnalysisDetail: React.FC<TrendAnalysisDetailProps> = ({ onBack }) => 
 
   const fetchAnalytics = async () => {
     try {
-      const response = await fetch('http://localhost:8000/paylabs');
+      const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${API_BASE_URL}/paylabs`);
       const result = await response.json();
       setData(result);
       generateAIInsight(result);
