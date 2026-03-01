@@ -39,12 +39,13 @@ const MarketOverview: React.FC = () => {
   const [data, setData] = useState<MarketOverviewData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  // @ts-ignore
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
   useEffect(() => {
     setLoading(true);
     setError(null);
     
-    fetch('http://localhost:8000/market-overview')
+      fetch(`${API_BASE_URL}/market-overview`)
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch market overview');
         return res.json();

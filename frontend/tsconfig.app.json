@@ -16,12 +16,15 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    
+    /* Tambahkan ini */
+    "types": ["vite/client"],
 
-    /* Linting - Dibuat false agar tidak error saat pengerjaan */
+    /* Linting */
     "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src", "src/**/*.d.ts"]
 }
