@@ -1,75 +1,52 @@
-# React + TypeScript + Vite
+# 🚀 Affili.io - Alibaba Smart Affiliate Analytics
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Affili.io adalah platform **Market Intelligence** yang dirancang khusus untuk *affiliate marketer*. Berbeda dengan katalog biasa, Affili.io membantu user memantau, memprediksi, dan mengeksekusi strategi penjualan berdasarkan tren pasar yang sedang berlangsung (real-time).
 
-Currently, two official plugins are available:
+Tujuan utama platform ini adalah memastikan *affiliate* merilis promosi produk pada momentum yang tepat untuk memaksimalkan **ROI (Return on Investment)**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🛠 Fitur Utama (Core Features)
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### 1. 📊 Market Overview
+Fitur ini memberikan gambaran besar mengenai produk yang sedang laris di pasaran.
+* **Fungsi:** Melihat produk populer secara *real-time*.
+* **Manfaat:** User tidak perlu menebak-nebak apa yang sedang tren; data berbicara langsung dari pasar Alibaba/AliExpress.
 
-Note: This will impact Vite dev & build performances.
+### 2. 🔍 Scanner (Value Checker)
+Alat untuk menganalisis nilai jual dari produk yang sudah dibeli atau ditransaksikan (misalnya melalui integrasi *Paylabs*).
+* **Fungsi:** Menilai seberapa besar *value* atau potensi jual produk tersebut di market saat ini.
+* **Manfaat:** Membantu user memutuskan apakah produk stok lama masih layak dipromosikan atau perlu strategi baru.
 
-## Expanding the ESLint configuration
+### 3. 🚨 Alert Engine
+Sistem peringatan dini untuk pergerakan tren produk.
+* **Fungsi:** Notifikasi otomatis untuk produk yang sedang naik daun (*Rising*) maupun yang mulai ditinggalkan (*Declining*).
+* **Manfaat:** *Merchant* dan *Affiliate* tetap kompetitif dan bisa langsung bereaksi terhadap perubahan kondisi pasar.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 4. 🧮 Simulator (Financial Forecasting)
+Simulator keuangan cerdas yang menghitung potensi profit.
+* **Fungsi:** Mensimulasikan kondisi keuangan jika user merilis produk tertentu dengan parameter khusus.
+* **Output:** Menampilkan estimasi **ROI** dengan mempertimbangkan tren market saat itu.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 5. 📱 Hashtag Generator & Tracker
+Optimasi promosi di media sosial.
+* **Fungsi:** Memantau tagar yang sedang viral di berbagai platform sosial media terkait produk tertentu.
+* **Manfaat:** User bisa langsung meng-generate hashtag paling efektif untuk meningkatkan *reach* promosi mereka.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📈 Cara Kerja (User Workflow)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. **Analisis:** User membuka **Market Overview** untuk mencari peluang.
+2. **Validasi:** Menggunakan **Alert Engine** untuk memastikan tren produk tersebut sedang menuju puncak (*Rising*).
+3. **Simulasi:** Memasukkan data ke **Simulator** untuk melihat apakah secara finansial (ROI) produk ini menguntungkan untuk dirilis sekarang.
+4. **Eksekusi:** Mengambil produk, lalu menggunakan fitur **Hashtag** untuk mendapatkan amunisi promosi di media sosial.
+5. **Monitoring:** Memantau hasil transaksi melalui **Scanner** untuk melihat efektivitas nilai jual di pasar.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🚀 Teknologi yang Digunakan
+* **Framework:** Next.js / React
+* **Deployment:** Vercel
+* **Data Source:** Alibaba/AliExpress API
+* **Payment Integration Example:** Paylabs
