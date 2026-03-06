@@ -1,38 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Users, 
   BarChart3, 
-  Percent, 
-  DollarSign, 
-  TrendingDown, 
-  RotateCcw,
-  Sparkles,
-  Loader2 // Tambahkan ini untuk icon loading
+  RotateCcw, 
+  Sparkles, 
+  Loader2, 
+  TrendingUp, 
+  Wallet 
 } from 'lucide-react';
 import './IncomeSimulator.css';
 
 const IncomeSimulator: React.FC = () => {
   const [userId, setUserId] = useState<number>(1);
-  const [productName, setProductName] = useState<string>('Test Product');
-  const [traffic, setTraffic] = useState<number>(1000);
-  const [commRate, setCommRate] = useState<number>(25);
-  const [opCosts, setOpCosts] = useState<number>(500);
+  const [productName, setProductName] = useState<string>('Tshirt');
+  const [traffic, setTraffic] = useState<number>(5000);
+  const [commRate, setCommRate] = useState<number>(15);
+  const [opCosts, setOpCosts] = useState<number>(200);
 
-  const [results, setResults] = useState({
-    conversions: 0,
-    grossRevenue: 0,
-    commissionEarned: 0,
-    netIncome: 0,
-    roi: 0,
-    incomeMin: 0,
-    incomeMax: 0,
-    opportunityScore: 0,
-    ctr: 0,
-    cr: 0,
-    aiInsight: ''
-  });
-
-  const [loading, setLoading] = useState<boolean>(false);
+  const [baseline, setBaseline] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -40,117 +26,122 @@ const IncomeSimulator: React.FC = () => {
     setError(null);
     const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
     
-    const timeoutId = setTimeout(() => {
-      fetch(`${API_BASE_URL}/analyze?user_id=${userId}&product_name=${productName}`)
-        .then((res) => {
-          if (!res.ok) throw new Error('Failed to fetch analysis data');
-          return res.json();
-        })
-        .then((data) => {
-          const metrics = data.metrics || {};
-          const incomeMin = metrics.income_min || 0;
-          const incomeMax = metrics.income_max || 0;
-          const avgIncome = (incomeMin + incomeMax) / 2;
-          
-          const estimatedClicks = (traffic * (metrics.ctr || 0)) / 100;
-          const estimatedSales = estimatedClicks * ((metrics.cr || 0) / 100);
-          const commissionEarned = (avgIncome * (commRate / 100)) * Math.max(1, traffic / 1000);
-          const netIncome = commissionEarned - opCosts;
-          const roi = opCosts > 0 ? (netIncome / opCosts) * 100 : 0;
+    fetch(`${API_BASE_URL}/analyze?user_id=${userId}&product_name=${productName}`)
+      .then(res => {
+        if (!res.ok) throw new Error('Produk atau User tidak ditemukan');
+        return res.json();
+      })
+      .then(data => {
+        setBaseline(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [userId, productName]);
 
-          setResults({
-            conversions: Math.floor(estimatedSales),
-            grossRevenue: Math.floor(avgIncome * Math.max(1, traffic / 1000)),
-            commissionEarned: Math.floor(commissionEarned),
-            netIncome: Math.floor(netIncome),
-            roi: Math.round(roi * 10) / 10,
-            incomeMin: Math.floor(incomeMin),
-            incomeMax: Math.floor(incomeMax),
-            opportunityScore: data.opportunity_score || 0,
-            ctr: metrics.ctr || 0,
-            cr: metrics.cr || 0,
-            aiInsight: data.ai_insight || 'No AI insight available'
-          });
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error('Analysis fetch error:', err);
-          setError(err.message);
-          setLoading(false);
-        });
-    }, 500); // Delay sedikit agar transisi loading terasa
+  const simulation = useMemo(() => {
+    if (!baseline) return null;
 
-    return () => clearTimeout(timeoutId);
-  }, [userId, productName, traffic, commRate, opCosts]);
+    const clicks = traffic * (baseline.base_ctr / 100);
+    const sales = clicks * (baseline.base_cr / 100);
+    const grossRevenue = sales * baseline.avg_price;
+    const commission = grossRevenue * (commRate / 100);
+    const netIncome = commission - opCosts;
+    const roi = opCosts > 0 ? (netIncome / opCosts) * 100 : 0;
+
+    return {
+      clicks: Math.floor(clicks),
+      sales: sales.toFixed(1),
+      commission: Math.floor(commission),
+      netIncome: Math.floor(netIncome),
+      roi: roi.toFixed(1),
+      productRealName: baseline.product_name,
+      aiInsight: baseline.ai_insight || "Gunakan slider untuk melihat potensi strategi."
+    };
+  }, [traffic, commRate, opCosts, baseline]);
 
   const resetToDefaults = () => {
-    setUserId(1);
-    setProductName('Test Product');
-    setTraffic(1000);
-    setCommRate(25);
-    setOpCosts(500);
+    setTraffic(5000);
+    setCommRate(15);
+    setOpCosts(200);
   };
 
   return (
     <div className="simulator-container">
       <div className="simulator-header">
-        <h2>Income Simulator</h2>
-        <p>What-if analysis for strategic planning</p>
+        <h2><TrendingUp size={20} style={{marginRight: '8px'}} /> Income Simulator</h2>
+        <p>Real-time projection based on CSV historical data</p>
       </div>
 
       <div className="simulator-grid">
+        {/* LEFT PANEL: PARAMETERS */}
         <section className="panel parameter-panel">
-          <h3>Simulation Parameters</h3>
-          
           <div className="input-group">
-            <div className="input-header">
-              <span><Users size={16} /> User ID</span>
-              <span className="badge">{userId}</span>
-            </div>
+            <label><Users size={14} /> User ID </label>
             <input type="number" value={userId} onChange={(e) => setUserId(Number(e.target.value))} className="custom-input" />
           </div>
 
           <div className="input-group">
-            <div className="input-header">
-              <span><BarChart3 size={16} /> Product Name</span>
-              <span className="badge">{productName}</span>
-            </div>
+            <label><BarChart3 size={14} /> Product Search</label>
             <input type="text" value={productName} onChange={(e) => setProductName(e.target.value)} className="custom-input" />
+            {simulation && <small className="found-tag">Matched: {simulation.productRealName}</small>}
           </div>
 
           <div className="input-group">
             <div className="input-header">
-              <span><Users size={16} /> Monthly Traffic</span>
-              <span className="badge">{traffic.toLocaleString()}</span>
+              <span>Monthly Traffic</span>
+              <span className="badge-purple">{traffic.toLocaleString()}</span>
             </div>
-            <input type="range" min="1000" max="50000" step="1000" value={traffic} onChange={(e) => setTraffic(Number(e.target.value))} />
+            <input type="range" min="1000" max="100000" step="500" value={traffic} onChange={(e) => setTraffic(Number(e.target.value))} />
           </div>
 
           <div className="input-group">
             <div className="input-header">
-              <span><Percent size={16} /> Commission Rate</span>
-              <span className="badge">{commRate}%</span>
+              <span>Commission Rate (%)</span>
+              <span className="badge-purple">{commRate}%</span>
             </div>
-            <input type="range" min="5" max="50" value={commRate} onChange={(e) => setCommRate(Number(e.target.value))} />
+            <input type="range" min="1" max="50" value={commRate} onChange={(e) => setCommRate(Number(e.target.value))} />
           </div>
 
-          <button className="btn-reset" onClick={resetToDefaults}>
-            <RotateCcw size={16} /> Reset
-          </button>
+          <div className="input-group">
+            <div className="input-header">
+              <span>Operational Costs ($)</span>
+              <span className="badge-purple">${opCosts}</span>
+            </div>
+            <input type="range" min="0" max="2000" step="50" value={opCosts} onChange={(e) => setOpCosts(Number(e.target.value))} />
+          </div>
+
+          <button className="btn-reset" onClick={resetToDefaults}><RotateCcw size={16} /> Reset Sliders</button>
         </section>
 
+        {/* RIGHT PANEL: RESULTS */}
         <section className="results-column">
           <div className={`panel results-panel ${loading ? 'loading-blur' : ''}`}>
-            {/* ... isi panel hasil tetap sama ... */}
-            <div className="result-card">
-              <div><p>Net Income</p><h2 className="text-green">${results.netIncome.toLocaleString()}</h2></div>
-              <div className="roi-badge">ROI: {results.roi}%</div>
-            </div>
+             <div className="main-income">
+                <p>ESTIMATED NET INCOME</p>
+                <h2 className={simulation && simulation.netIncome >= 0 ? "text-green" : "text-red"}>
+                  {simulation ? `$${simulation.netIncome.toLocaleString()}` : "$0"}
+                </h2>
+                {simulation && <div className="roi-badge">ROI: {simulation.roi}%</div>}
+             </div>
+
+             <div className="mini-stats">
+                <div className="stat-box">
+                  <span className="label">Est. Sales</span>
+                  <span className="value">{simulation?.sales || 0}</span>
+                </div>
+                <div className="stat-box">
+                  <span className="label">Comm. Earned</span>
+                  <span className="value">${simulation?.commission.toLocaleString() || 0}</span>
+                </div>
+             </div>
           </div>
         </section>
       </div>
 
-      {/* AI Recommendations Section */}
+      {/* BOTTOM PANEL: AI INSIGHTS */}
       <div className="panel recommendations-box">
         <div className="ai-header">
           <Sparkles size={20} className={loading ? "animate-spin-slow" : "text-purple"} />
@@ -169,7 +160,7 @@ const IncomeSimulator: React.FC = () => {
             <p className="text-red">Error: {error}</p>
           ) : (
             <div className="ai-text-display">
-              {results.aiInsight.replace(/\*\*/g, '')}
+              {simulation?.aiInsight.replace(/\*\*/g, '')}
             </div>
           )}
         </div>
