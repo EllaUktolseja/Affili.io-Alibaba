@@ -1,13 +1,14 @@
 import React, { ReactNode, useState } from 'react';
 import './MainLayout.css';
-import { 
-  LayoutGrid, 
-  Search, 
-  TrendingUp, 
-  Bell, 
-  Calculator, 
-  Hash, 
-  Settings 
+import {
+  LayoutGrid,
+  Search,
+  TrendingUp,
+  Bell,
+  Calculator,
+  Hash,
+  Settings,
+  User
 } from 'lucide-react';
 import NotificationPanel from './NotificationPanel';
 import SettingsPanel from './SettingsPanel';
@@ -23,7 +24,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, activeTab, setActiveT
   const [settingsOpen, setSettingsOpen] = useState(false);
   const navItems = [
     { label: 'Overview', icon: LayoutGrid },
-    { label: 'Scanner', icon: Search }, 
+    { label: 'Scanner', icon: Search },
     { label: 'Alerts', icon: Bell },
     { label: 'Simulator', icon: Calculator },
     { label: 'Hashtags', icon: Hash },
@@ -50,11 +51,21 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, activeTab, setActiveT
           </div>
           <Settings size={20} className="settings-icon" onClick={() => setSettingsOpen(!settingsOpen)} />
           <div className="divider"></div>
-          <div className="premium-badge">
-            <span className="plan-text">Premium Plan</span>
-            <span className="team-text">SYNC1 Team</span>
+          <div
+            className={`profile-trigger ${activeTab === 'Profile' ? 'active-profile' : ''}`}
+            onClick={() => setActiveTab('Profile')}
+          >
+            <div className="user-avatar-mini">
+              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="User" />
+            </div>
+            <div className="premium-badge">
+              <span className="plan-text">Premium Plan</span>
+              <span className="team-text">SYNC1 Team</span>
+            </div>
           </div>
         </div>
+
+
       </header>
 
       {/* --- FLOATING TABS --- */}
@@ -110,16 +121,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, activeTab, setActiveT
       </footer>
 
       {/* --- NOTIFICATION & SETTINGS PANELS --- */}
-      <NotificationPanel 
-        isOpen={notifOpen} 
+      <NotificationPanel
+        isOpen={notifOpen}
         onClose={() => setNotifOpen(false)}
         onShowAll={() => {
           setNotifOpen(false);
           setActiveTab('Alerts');
         }}
       />
-      <SettingsPanel 
-        isOpen={settingsOpen} 
+      <SettingsPanel
+        isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
       />
     </div>

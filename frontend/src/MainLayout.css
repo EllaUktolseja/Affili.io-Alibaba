@@ -325,3 +325,66 @@
   animation: fadeIn 0.3s ease-in;
 }
 
+/* Container untuk area klik profil */
+.profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.profile-trigger:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.profile-trigger.active-profile {
+    background: rgba(147, 51, 234, 0.1);
+    border-color: rgba(147, 51, 234, 0.3);
+}
+
+/* Lingkaran Avatar Mini */
+.user-avatar-mini {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #9333ea;
+    background: #1e1b4b;
+}
+
+.user-avatar-mini img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.premium-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+    text-align: left;
+}
+
+.plan-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+}
+
+.team-text {
+    font-size: 10px;
+    color: #a855f7;
+    font-weight: 600;
+}
+
+.divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 8px;
+}

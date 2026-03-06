@@ -6,6 +6,7 @@ import IncomeSimulator from './IncomeSimulator';
 import AlertInsight from './AlertInsight';
 import HashtagAnalysis from './HashtagAnalysis';
 import TrendAnalysisDetail from './TrendAnalysisDetail';
+import ProfileComponent from './ProfileComponent'; //
 
 function App() {
   const [currentTab, setCurrentTab] = useState<string>('Overview');
@@ -21,6 +22,7 @@ function App() {
   }, []);
 
   const renderContent = () => {
+    // Jika sedang melihat detail trend, prioritaskan ini
     if (showTrendDetail) {
       return <TrendAnalysisDetail onBack={() => setShowTrendDetail(false)} />;
     }
@@ -29,13 +31,15 @@ function App() {
       case 'Overview':
         return <MarketOverview />;
       case 'Scanner':
-        return <Scanner onViewTrendAnalysis={() => setShowTrendDetail(true)} />; // Pass callback
+        return <Scanner onViewTrendAnalysis={() => setShowTrendDetail(true)} />;
       case 'Simulator':
         return <IncomeSimulator />;
       case 'Alerts':
         return <AlertInsight />;
       case 'Hashtags':
         return <HashtagAnalysis />;
+      case 'Profile': // 2. Tambahkan case untuk Profile
+        return <ProfileComponent onBack={() => setCurrentTab('Overview')} />;
       default:
         return <MarketOverview />;
     }
