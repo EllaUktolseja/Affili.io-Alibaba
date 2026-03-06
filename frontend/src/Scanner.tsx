@@ -83,7 +83,7 @@ const Scanner: React.FC<ScannerProps> = ({ onViewTrendAnalysis }) => {
         {/* Paylabs Metrics Summary */}
         {paylabsMetrics && !metricsLoading && (
           <div className="metricsSection">
-            <h2 className="metricsTitle">💰 Business Performance (Paylabs)</h2>
+            <h2 className="metricsTitle">Business Performance (Paylabs)</h2>
             <div className="metricsGrid">
               <div className="metricCard">
                 <div className="metricIcon" style={{ background: 'linear-gradient(135deg, #93c5fd, #60a5fa)' }}>
@@ -135,7 +135,7 @@ const Scanner: React.FC<ScannerProps> = ({ onViewTrendAnalysis }) => {
 
         {metricsLoading && (
           <div className="metricsSection" style={{ opacity: 0.5 }}>
-            <h2 className="metricsTitle">💰 Loading Business Performance...</h2>
+            <h2 className="metricsTitle">Loading Business Performance...</h2>
           </div>
         )}
 

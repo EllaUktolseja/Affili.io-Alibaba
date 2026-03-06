@@ -60,8 +60,8 @@ const TrendAnalysisDetail: React.FC<TrendAnalysisDetailProps> = ({ onBack }) => 
     const revenue = analytics.aggregated_data.revenue;
     const margin = analytics.aggregated_data.margin;
 
-    let insight = `📊 **Analisis Mingguan Bisnis Anda**\n\n`;
-    
+    let insight = `📊 Analisis Mingguan Bisnis Anda\n\n`;
+
     if (analytics.business_score >= 75) {
       insight += `✅ Kesehatan bisnis sangat baik dengan skor ${analytics.business_score}/100.\n\n`;
     } else if (analytics.business_score >= 50) {
@@ -70,12 +70,12 @@ const TrendAnalysisDetail: React.FC<TrendAnalysisDetailProps> = ({ onBack }) => 
       insight += `🔴 Kesehatan bisnis perlu perhatian (skor ${analytics.business_score}/100).\n\n`;
     }
 
-    insight += `💰 **Performa Finansial:**\n`;
+    insight += `Performa Finansial:\n`;
     insight += `- Total Revenue: Rp ${revenue.toLocaleString()}\n`;
     insight += `- Profit Margin: Rp ${margin.toLocaleString()}\n`;
     insight += `- Growth Trend: ${growth}\n\n`;
 
-    insight += `📈 **Kesimpulan:**\n`;
+    insight += `Kesimpulan:\n`;
     if (refundRate > 5) {
       insight += `⚠️ Refund rate tinggi (${refundRate}%) - tinjau kualitas produk atau customer service.\n`;
     } else {
@@ -136,12 +136,26 @@ const TrendAnalysisDetail: React.FC<TrendAnalysisDetailProps> = ({ onBack }) => 
       <div className="ai-insight-panel">
         <div className="ai-header">
           <Zap size={20} color="#fbbf24" />
-          <h3>🧠 AI Insight</h3>
+          <h3>AI Insight</h3>
         </div>
         <div className="insight-content">
-          {aiInsight.split('\n').map((line, i) => (
-            <p key={i} className="insight-line">{line}</p>
-          ))}
+          {aiInsight.split('\n').map((line, i) => {
+            const cleanLine = line.replace(/\*\*/g, '');
+            const isHeader = cleanLine.trim().endsWith(':') || cleanLine.includes('📊');
+
+            return (
+              <p
+                key={i}
+                className="insight-line"
+                style={{
+                  fontWeight: isHeader ? '700' : '400',
+                  color: isHeader ? '#a78bfa' : '#f8fafc' // Judul section jadi ungu terang
+                }}
+              >
+                {cleanLine}
+              </p>
+            );
+          })}
         </div>
       </div>
 
@@ -149,7 +163,7 @@ const TrendAnalysisDetail: React.FC<TrendAnalysisDetailProps> = ({ onBack }) => 
         {/* Revenue Trend */}
         <div className="detail-card">
           <div className="card-header">
-            <h3>📊 Revenue Trend (7 Days)</h3>
+            <h3>📊 Revenue Trend - 7 Days</h3>
             <span className="badge-growth">{data.weekly_growth_badge}</span>
           </div>
 
@@ -189,7 +203,7 @@ const TrendAnalysisDetail: React.FC<TrendAnalysisDetailProps> = ({ onBack }) => 
         {/* Transaction Overview */}
         <div className="detail-card">
           <div className="card-header">
-            <h3>📦 Transaction Overview</h3>
+            <h3>Transaction Overview</h3>
             {hasElevatedRefund && <span className="badge-warning">⚠ Elevated Refund</span>}
           </div>
 
@@ -225,7 +239,7 @@ const TrendAnalysisDetail: React.FC<TrendAnalysisDetailProps> = ({ onBack }) => 
         {/* Product Trend Movement */}
         <div className="detail-card full-width">
           <div className="card-header">
-            <h3>📈 Product Trend Movement</h3>
+            <h3>Product Trend Movement</h3>
           </div>
 
           <div className="product-table">
@@ -282,8 +296,8 @@ const TrendAnalysisDetail: React.FC<TrendAnalysisDetailProps> = ({ onBack }) => 
             {data.business_score >= 80
               ? 'Excellent performance! Your business is thriving.'
               : data.business_score >= 60
-              ? 'Good performance. Keep improving key metrics.'
-              : 'Need improvement. Focus on reducing refunds and increasing revenue.'}
+                ? 'Good performance. Keep improving key metrics.'
+                : 'Need improvement. Focus on reducing refunds and increasing revenue.'}
           </p>
         </div>
       </div>

@@ -33,7 +33,7 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
       {isOpen && <div className="settings-overlay" onClick={onClose}></div>}
       <div className={`settings-panel ${isOpen ? 'open' : ''}`}>
         <div className="settings-header">
-          <h3>⚙️ Settings</h3>
+          <h3>Settings</h3>
           <button className="close-btn" onClick={onClose}>
             <X size={20} />
           </button>

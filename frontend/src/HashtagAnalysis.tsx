@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Hash, 
-  TrendingUp, 
-  MessageCircle, 
-  Heart, 
-  BarChart3, 
-  Sparkles, 
-  CheckCircle2, 
-  Lightbulb, 
+import {
+  Hash,
+  TrendingUp,
+  MessageCircle,
+  Heart,
+  BarChart3,
+  Sparkles,
+  CheckCircle2,
+  Lightbulb,
   AlertTriangle,
   Info
 } from 'lucide-react';
@@ -17,7 +17,7 @@ const HashtagAnalysis: React.FC = () => {
   const [hashtags, setHashtags] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   // For AI hashtag generation
   const [productName, setProductName] = useState<string>('');
   const [aiRecommendations, setAiRecommendations] = useState<any | null>(null);
@@ -46,14 +46,14 @@ const HashtagAnalysis: React.FC = () => {
       .then((data) => {
         const transformedHashtags = data.hashtags.map((ht: any, index: number) => {
           const postsNum = parseInt(ht.posts.replace(/[MK]/g, '')) * (ht.posts.includes('M') ? 1000000 : 1000);
-          
+
           const baseEngagement = Math.max(5, Math.min(9, (postsNum / 500000) * 10));
           const sentiment = Math.floor(Math.random() * 20 + 75); // 75-95%
           const engagement = (baseEngagement + (Math.random() * 2 - 1)).toFixed(1);
           const growth = Math.floor(Math.random() * 100 + 50); // +50% to +150%
           const comments = Math.floor(postsNum / 5000);
           const likes = `${Math.floor(postsNum / 200)}K`;
-          
+
           return {
             name: ht.hashtag.startsWith('#') ? ht.hashtag : `#${ht.hashtag}`,
             posts: ht.posts,
@@ -66,7 +66,7 @@ const HashtagAnalysis: React.FC = () => {
             source: ht.source
           };
         });
-        
+
         setHashtags(transformedHashtags);
         setLoading(false);
       })
@@ -88,12 +88,12 @@ const HashtagAnalysis: React.FC = () => {
 
     setAiLoading(true);
     setAiError(null);
-    
+
     try {
       const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
       const response = await fetch(`${API_BASE_URL}/hashtags/generate?product_name=${encodeURIComponent(productName)}`);
       if (!response.ok) throw new Error('Failed to generate hashtags');
-      
+
       const data = await response.json();
       setAiRecommendations(data);
       setAiError(null);
@@ -113,13 +113,13 @@ const HashtagAnalysis: React.FC = () => {
       </div>
 
       {/* AI Hashtag Generator Section */}
-      <div className="panel" style={{background: 'linear-gradient(135deg, rgba(103, 58, 183, 0.1) 0%, rgba(156, 39, 176, 0.1) 100%)', borderLeft: '4px solid #7c3aed', marginBottom: '30px'}}>
-        <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px'}}>
+      <div className="panel" style={{ background: 'linear-gradient(135deg, rgba(103, 58, 183, 0.1) 0%, rgba(156, 39, 176, 0.1) 100%)', borderLeft: '4px solid #7c3aed', marginBottom: '30px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '15px' }}>
           <Sparkles size={20} className="text-purple" />
-          <h3 style={{margin: 0}}>AI Hashtag Generator</h3>
+          <h3 style={{ margin: 0 }}>AI Hashtag Generator</h3>
         </div>
-        
-        <div style={{display: 'flex', gap: '10px', marginBottom: '15px'}}>
+
+        <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
           <input
             type="text"
             value={productName}
@@ -152,31 +152,33 @@ const HashtagAnalysis: React.FC = () => {
           </button>
         </div>
 
-        {aiError && <div style={{color: '#c62828', fontSize: '14px', marginBottom: '10px'}}>ℹ️ {aiError}</div>}
+        {aiError && <div style={{ color: '#c62828', fontSize: '14px', marginBottom: '10px' }}>ℹ️ {aiError}</div>}
 
         {aiRecommendations && !aiLoading && (
-          <div style={{marginTop: '15px'}}>
+          <div style={{ marginTop: '15px' }}>
             {aiRecommendations.ai_recommendation && typeof aiRecommendations.ai_recommendation === 'object' && !aiRecommendations.ai_recommendation.error ? (
-              <div>
-                {aiRecommendations.ai_recommendation.primary_hashtags && aiRecommendations.ai_recommendation.primary_hashtags.length > 0 && (
-                  <div style={{marginBottom: '12px'}}>
-                    <p style={{fontSize: '13px', color: '#666', marginBottom: '6px'}}><strong>Primary Hashtags (High Buyer Intent):</strong></p>
-                    <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px'}}>
+              <div className="ai-result-container">
+                {/* Primary Hashtags */}
+                {aiRecommendations.ai_recommendation.primary_hashtags && (
+                  <div className="ai-res-group">
+                    <p className="ai-res-label">Primary Hashtags (High Buyer Intent):</p>
+                    <div className="ai-tag-wrapper">
                       {aiRecommendations.ai_recommendation.primary_hashtags.map((tag: string, idx: number) => (
-                        <span key={idx} style={{background: '#7c3aed', color: 'white', padding: '6px 12px', borderRadius: '20px', fontSize: '13px'}}>
+                        <span key={idx} className="ai-tag primary">
                           {tag.startsWith('#') ? tag : `#${tag}`}
                         </span>
                       ))}
                     </div>
                   </div>
                 )}
-                
-                {aiRecommendations.ai_recommendation.supporting_hashtags && aiRecommendations.ai_recommendation.supporting_hashtags.length > 0 && (
-                  <div style={{marginBottom: '12px'}}>
-                    <p style={{fontSize: '13px', color: '#666', marginBottom: '6px'}}><strong>Supporting Hashtags (Niche + Edukasi):</strong></p>
-                    <div style={{display: 'flex', flexWrap: 'wrap', gap: '8px'}}>
+
+                {/* Supporting Hashtags */}
+                {aiRecommendations.ai_recommendation.supporting_hashtags && (
+                  <div className="ai-res-group">
+                    <p className="ai-res-label">Supporting Hashtags (Niche + Edukasi):</p>
+                    <div className="ai-tag-wrapper">
                       {aiRecommendations.ai_recommendation.supporting_hashtags.map((tag: string, idx: number) => (
-                        <span key={idx} style={{background: '#9c27b0', color: 'white', padding: '6px 12px', borderRadius: '20px', fontSize: '13px'}}>
+                        <span key={idx} className="ai-tag supporting">
                           {tag.startsWith('#') ? tag : `#${tag}`}
                         </span>
                       ))}
@@ -184,33 +186,40 @@ const HashtagAnalysis: React.FC = () => {
                   </div>
                 )}
 
-                {aiRecommendations.ai_recommendation.best_combination && aiRecommendations.ai_recommendation.best_combination.length > 0 && (
-                  <div>
-                    <p style={{fontSize: '13px', color: '#666', marginBottom: '6px'}}><strong>✨ Best Combination:</strong></p>
-                    <div style={{background: '#f5f5f5', padding: '12px', borderRadius: '6px', fontSize: '13px'}}>
+                {/* Best Combination */}
+                {aiRecommendations.ai_recommendation.best_combination && (
+                  <div className="ai-res-group">
+                    <p className="ai-res-label">✨ Best Combination:</p>
+                    <div className="ai-combination-box">
                       {aiRecommendations.ai_recommendation.best_combination.map((tag: string, idx: number) => (
-                        <span key={idx}>{tag.startsWith('#') ? tag : `#${tag}`}{idx < aiRecommendations.ai_recommendation.best_combination.length - 1 ? ' ' : ''}</span>
+                        <span key={idx} className="text-bright-white">
+                          {tag.startsWith('#') ? tag : `#${tag}`}{' '}
+                        </span>
                       ))}
                     </div>
                   </div>
                 )}
 
+                {/* Strategy Reason - Dibersihkan dari ** */}
                 {aiRecommendations.ai_recommendation.strategy_reason && (
-                  <div style={{marginTop: '12px', fontSize: '13px', color: '#333', fontStyle: 'italic'}}>
-                    📝 <strong>Why:</strong> {aiRecommendations.ai_recommendation.strategy_reason}
+                  <div className="ai-strategy-box">
+                    <span className="ai-strategy-title">💡 Why:</span>
+                    <p className="ai-strategy-text">
+                      {aiRecommendations.ai_recommendation.strategy_reason.replace(/\*\*/g, '')}
+                    </p>
                   </div>
                 )}
               </div>
             ) : (
-              <p style={{fontSize: '14px', color: '#666'}}>Could not parse AI recommendations. Please try again.</p>
+              <p className="text-bright-white">Could not parse AI recommendations. Please try again.</p>
             )}
           </div>
         )}
       </div>
 
-      {loading && <div style={{padding: '20px', textAlign: 'center'}}><em>Loading hashtag data...</em></div>}
-      {error && <div style={{padding: '20px', background: 'rgba(255, 193, 7, 0.1)', color: '#8b7a00', borderRadius: '8px', margin: '10px 0'}}><em>ℹ️ {error}</em></div>}
-      {!loading && hashtags.length === 0 && !error && <div style={{padding: '20px', textAlign: 'center'}}><em>No hashtags found</em></div>}
+      {loading && <div style={{ padding: '20px', textAlign: 'center' }}><em>Loading hashtag data...</em></div>}
+      {error && <div style={{ padding: '20px', background: 'rgba(255, 193, 7, 0.1)', color: '#8b7a00', borderRadius: '8px', margin: '10px 0' }}><em>ℹ️ {error}</em></div>}
+      {!loading && hashtags.length === 0 && !error && <div style={{ padding: '20px', textAlign: 'center' }}><em>No hashtags found</em></div>}
 
       {!loading && hashtags.length > 0 && (
         <>
@@ -225,7 +234,7 @@ const HashtagAnalysis: React.FC = () => {
                   <span className="tag-name"><Hash size={16} /> {tag.name.substring(1)}</span>
                   <span className="growth-tag">{tag.growth}</span>
                 </div>
-                
+
                 <div className="stats-row">
                   <div className="stat-box">
                     <Info size={14} className="icon-blue" />
@@ -269,7 +278,7 @@ const HashtagAnalysis: React.FC = () => {
               <div className="bar-chart-container">
                 {hashtags.map((tag, i) => (
                   <div key={i} className="bar-group">
-                    <div className="bar" style={{ height: `${Number(tag.engagement.replace('%','')) * 10}px` }}></div>
+                    <div className="bar" style={{ height: `${Number(tag.engagement.replace('%', '')) * 10}px` }}></div>
                     <span className="bar-label">{tag.name}</span>
                   </div>
                 ))}

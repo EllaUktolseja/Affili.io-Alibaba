@@ -54,7 +54,6 @@ const AlertInsight: React.FC = () => {
             description: `Detected issues in ${alert.category || alert.product || 'Market Data'}`,
             time: alert.detected_at,
             metrics: {
-              // Ambil data sesuai key di Python kamu
               growth: alert.trend_growth ? `+${alert.trend_growth.toFixed(1)}%` :
                 alert.market_share_percent ? `${alert.market_share_percent}% Share` : 'N/A',
               velocity: alert.velocity_score ? alert.velocity_score.toFixed(1) :
@@ -123,7 +122,6 @@ const AlertInsight: React.FC = () => {
                     <strong>{alert.metrics?.growth || '0%'}</strong>
                   </div>
 
-                  {/* Hanya tampil jika velocity bukan 'N/A' */}
                   {alert.metrics?.velocity !== 'N/A' && (
                     <div className="metric-box">
                       <span>Mention Velocity</span>
@@ -156,7 +154,7 @@ const AlertInsight: React.FC = () => {
                     {alert.aiInsight ? (
                       alert.aiInsight.split(/(?=\d\.\s)/).map((sentence, index) => (
                         <p key={index} className="ai-insight-step">
-                          {sentence.trim()}
+                          {sentence.trim().replace(/\*\*/g, '')}
                         </p>
                       ))
                     ) : (
