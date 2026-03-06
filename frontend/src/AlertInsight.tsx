@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Flame, AlertTriangle, ShieldAlert, Lightbulb, Sparkles, ChevronDown, ChevronUp } from 'lucide-react';
 import './AlertInsight.css';
-  
+
 interface AlertItem {
   id?: number;
   type?: 'trend' | 'saturation' | 'refund' | 'opportunity';
@@ -35,39 +35,39 @@ const AlertInsight: React.FC = () => {
         return res.json();
       })
       .then((data) => {
-  
-  const alertList = Array.isArray(data) ? data : (data.alerts || []);
-  
-  setAlerts(alertList.map((alert: any, idx: number) => {
-    // Mapping tipe alert dari backend ke icon frontend
-    const typeMap: { [key: string]: 'trend' | 'saturation' | 'refund' | 'opportunity' } = {
-      'TREND_SPIKE': 'trend',
-      'MARKET_SATURATION': 'saturation',
-      'HIGH_REFUND_RISK': 'refund',
-      'CONVERSION_DROP': 'opportunity'
-    };
 
-    return {
-      id: idx + 1,
-      type: typeMap[alert.alert_type] || 'trend',
-      title: alert.alert_type.replace(/_/g, ' '), 
-      description: `Detected issues in ${alert.category || alert.product || 'Market Data'}`,
-      time: alert.detected_at,
-      metrics: {
-        // Ambil data sesuai key di Python kamu
-        growth: alert.trend_growth ? `+${alert.trend_growth.toFixed(1)}%` : 
+        const alertList = Array.isArray(data) ? data : (data.alerts || []);
+
+        setAlerts(alertList.map((alert: any, idx: number) => {
+          // Mapping tipe alert dari backend ke icon frontend
+          const typeMap: { [key: string]: 'trend' | 'saturation' | 'refund' | 'opportunity' } = {
+            'TREND_SPIKE': 'trend',
+            'MARKET_SATURATION': 'saturation',
+            'HIGH_REFUND_RISK': 'refund',
+            'CONVERSION_DROP': 'opportunity'
+          };
+
+          return {
+            id: idx + 1,
+            type: typeMap[alert.alert_type] || 'trend',
+            title: alert.alert_type.replace(/_/g, ' '),
+            description: `Detected issues in ${alert.category || alert.product || 'Market Data'}`,
+            time: alert.detected_at,
+            metrics: {
+              // Ambil data sesuai key di Python kamu
+              growth: alert.trend_growth ? `+${alert.trend_growth.toFixed(1)}%` :
                 alert.market_share_percent ? `${alert.market_share_percent}% Share` : 'N/A',
-        velocity: alert.velocity_score ? alert.velocity_score.toFixed(1) : 
-                  alert.refund_rate ? `Risk: ${(alert.refund_rate * 100).toFixed(1)}%` : 'N/A',
-        score: alert.score,
-        category: alert.category || alert.product || 'N/A',
-        detected: alert.detected_at
-      },
-      aiInsight: alert.ai_insight || 'AI recommends immediate review of this category.'
-    };
-  }));
-  setLoading(false);
-});
+              velocity: alert.velocity_score ? alert.velocity_score.toFixed(1) :
+                alert.refund_rate ? `Risk: ${(alert.refund_rate * 100).toFixed(1)}%` : 'N/A',
+              score: alert.score,
+              category: alert.category || alert.product || 'N/A',
+              detected: alert.detected_at
+            },
+            aiInsight: alert.ai_insight || 'AI recommends immediate review of this category.'
+          };
+        }));
+        setLoading(false);
+      });
   }, []);
 
   const toggleExpand = (id: number) => {
@@ -86,9 +86,9 @@ const AlertInsight: React.FC = () => {
           <h3>Recent Alerts</h3>
           <span className="badge-urgent">{alerts.length} Alerts</span>
         </div>
-        {loading && <div style={{padding: '20px', textAlign: 'center'}}>Loading alerts...</div>}
-        {error && <div style={{padding: '20px', color: 'red'}}>Error: {error}</div>}
-        {!loading && !error && alerts.length === 0 && <div style={{padding: '20px'}}>No alerts found.</div>}
+        {loading && <div style={{ padding: '20px', textAlign: 'center' }}>Loading alerts...</div>}
+        {error && <div style={{ padding: '20px', color: 'red' }}>Error: {error}</div>}
+        {!loading && !error && alerts.length === 0 && <div style={{ padding: '20px' }}>No alerts found.</div>}
         {!loading && !error && alerts.map((alert) => (
           <div key={alert.id} className={`alert-card border-${alert.type}`}>
             <div className="alert-main-info">
@@ -98,7 +98,7 @@ const AlertInsight: React.FC = () => {
                 {alert.type === 'refund' && <ShieldAlert className="icon-danger" size={20} />}
                 {alert.type === 'opportunity' && <Lightbulb className="icon-info" size={20} />}
               </div>
-              
+
               <div className="alert-text-content">
                 <div className="alert-title-row">
                   <span className="alert-title-text">{alert.title}</span>
@@ -120,32 +120,49 @@ const AlertInsight: React.FC = () => {
                 <div className="metrics-grid">
                   <div className="metric-box">
                     <span>Trend Growth</span>
-                    <strong>{alert.metrics?.growth || 'N/A'}</strong>
+                    <strong>{alert.metrics?.growth || '0%'}</strong>
                   </div>
-                  <div className="metric-box">
-                    <span>Mention Velocity</span>
-                    <strong>{alert.metrics?.velocity || 'N/A'}</strong>
-                  </div>
+
+                  {/* Hanya tampil jika velocity bukan 'N/A' */}
+                  {alert.metrics?.velocity !== 'N/A' && (
+                    <div className="metric-box">
+                      <span>Mention Velocity</span>
+                      <strong>{alert.metrics?.velocity}</strong>
+                    </div>
+                  )}
+
                   <div className="metric-box">
                     <span>Opportunity Score</span>
-                    <strong>{alert.metrics?.score ? `${alert.metrics.score}/100` : 'N/A'}</strong>
+                    <strong>{alert.metrics?.score ? `${alert.metrics.score}/100` : '0/100'}</strong>
                   </div>
+
                   <div className="metric-box">
                     <span>Category</span>
-                    <strong>{alert.metrics?.category || 'N/A'}</strong>
+                    <strong>{alert.metrics?.category || 'General'}</strong>
                   </div>
+
                   <div className="metric-box">
                     <span>Detected At</span>
-                    <strong>{alert.metrics?.detected || 'N/A'}</strong>
+                    <strong>{alert.metrics?.detected || '-'}</strong>
                   </div>
                 </div>
 
                 <div className="ai-insight-box">
                   <div className="ai-insight-header">
                     <Sparkles size={16} className="text-purple" />
-                    <span>AI Recommendations</span>
+                    <span>AI Strategic Analysis</span>
                   </div>
-                  <p>{alert.aiInsight}</p>
+                  <div className="ai-insight-content">
+                    {alert.aiInsight ? (
+                      alert.aiInsight.split(/(?=\d\.\s)/).map((sentence, index) => (
+                        <p key={index} className="ai-insight-step">
+                          {sentence.trim()}
+                        </p>
+                      ))
+                    ) : (
+                      <p className="ai-insight-step">Generating strategic recommendations...</p>
+                    )}
+                  </div>
                 </div>
               </div>
             )}

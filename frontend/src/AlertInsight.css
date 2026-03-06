@@ -117,3 +117,29 @@
 .icon-trend { color: #f97316; }
 .icon-warn { color: #f59e0b; }
 .icon-danger { color: #ef4444; }
+
+.ai-insight-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; 
+  margin-top: 8px;
+}
+
+.ai-insight-step {
+  color: #c4b5fd !important;
+  font-size: 0.9rem !important;
+  line-height: 1.6;
+  padding: 10px 15px; 
+  border-left: 3px solid #a855f7;
+  background: rgba(168, 85, 247, 0.05); 
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 8px !important;
+}
+
+.ai-insight-step strong, .ai-insight-step b {
+  color: #ffffff; 
+  display: block; 
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+  text-transform: capitalize;
+}
