@@ -574,3 +574,36 @@ input[type="range"] {
   border-color: #7c3aed;
   outline: none;
 }
+
+.btn-analyze {
+  width: 100%;
+  padding: 10px;
+  background: #7c3aed;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  transition: all 0.2s;
+}
+
+.btn-analyze:hover { background: #6d28d9; transform: translateY(-1px); }
+.btn-analyze:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.divider {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 1.5rem;
+}
+
+.match-info {
+  margin-top: 15px;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-align: center;
+}

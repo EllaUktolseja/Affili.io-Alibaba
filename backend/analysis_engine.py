@@ -28,33 +28,43 @@ df_products[['Price_Min', 'Price_Max']] = df_products['Price_Range_USD'].apply(
 )
 
 # CALCULATE INCOME FUNCTION
-# Perbaikan pada fungsi calculate_potential_income di BE
 def calculate_potential_income(user_id: int, product_name: str):
+
+    # Cari user
     user_data = df_users[df_users['User_ID'] == user_id]
+
     if user_data.empty:
         return {"error": "User tidak ditemukan"}
 
-    # Ambil CTR dan CR asli milik user tersebut dari CSV
-    user_cr = float(user_data['Conversion_Rate (%)'].values[0]) 
-    user_ctr = float(user_data['CTR (%)'].values[0])
+    user_cr = user_data['Conversion_Rate (%)'].values[0] / 100
+    user_ctr = user_data['CTR (%)'].values[0] / 100
 
+    # Cari produk
     product_matches = df_products[
         df_products['Product_Name'].str.contains(product_name, case=False, na=False)
     ]
+
     if product_matches.empty:
         return {"error": "Produk tidak ditemukan"}
 
     product = product_matches.iloc[0]
-    
-    # Kirim BASELINE data ke frontend
+
+    # Proyeksi 1000 views
+    estimated_clicks = 1000 * user_ctr
+    estimated_sales = estimated_clicks * user_cr
+
+    min_income = product['Price_Min'] * estimated_sales
+    max_income = product['Price_Max'] * estimated_sales
+
     return {
         "user_id": user_id,
         "product_name": product['Product_Name'],
-        "base_ctr": user_ctr, 
-        "base_cr": user_cr,   
-        "price_min": float(product['Price_Min']),
-        "price_max": float(product['Price_Max']),
-        "avg_price": float((product['Price_Min'] + product['Price_Max']) / 2)
+        "ctr": round(user_ctr * 100, 2),
+        "cr": round(user_cr * 100, 2),
+        "estimated_clicks": round(estimated_clicks, 0),
+        "estimated_sales": round(estimated_sales, 1),
+        "income_min": round(min_income, 2),
+        "income_max": round(max_income, 2)
     }
 
 def calculate_opportunity_score(ctr, cr, estimated_sales, income_max):
