@@ -8,16 +8,12 @@ interface SettingsPanelProps {
 }
 
 const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
-  const [darkMode, setDarkMode] = useState(true);
   const [notifications, setNotifications] = useState(true);
   const [sound, setSound] = useState(true);
   const [emailAlerts, setEmailAlerts] = useState(true);
 
   const handleSettingChange = (setting: string, value: boolean) => {
     switch (setting) {
-      case 'theme':
-        setDarkMode(value);
-        break;
       case 'notifications':
         setNotifications(value);
         break;
@@ -44,29 +40,6 @@ const SettingsPanel: React.FC<SettingsPanelProps> = ({ isOpen, onClose }) => {
         </div>
 
         <div className="settings-content">
-          {/* Display Settings */}
-          <div className="settings-section">
-            <h4 className="section-title">Display</h4>
-
-            <div className="setting-item">
-              <div className="setting-info">
-                <div className="setting-label">
-                  {darkMode ? <Moon size={18} /> : <Sun size={18} />}
-                  <span>Dark Mode</span>
-                </div>
-                <p className="setting-description">Use dark theme for comfortable viewing</p>
-              </div>
-              <label className="toggle-switch">
-                <input
-                  type="checkbox"
-                  checked={darkMode}
-                  onChange={(e) => handleSettingChange('theme', e.target.checked)}
-                />
-                <span className="slider"></span>
-              </label>
-            </div>
-          </div>
-
           {/* Notification Settings */}
           <div className="settings-section">
             <h4 className="section-title">Notification</h4>

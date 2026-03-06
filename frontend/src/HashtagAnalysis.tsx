@@ -216,7 +216,6 @@ const HashtagAnalysis: React.FC = () => {
         <>
           <div className="analysis-toggle">
             <button className="toggle-btn active">Hashtag Analysis</button>
-            <button className="toggle-btn">Top Affiliators</button>
           </div>
 
           <div className="hashtag-grid">

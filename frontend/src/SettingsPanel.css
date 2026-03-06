@@ -1,10 +1,19 @@
-/* SettingsPanel Styles */
+/* DARK MODE */
+:root  {
+  --bg-gradient: linear-gradient(135deg, #150b2e 0%, #1a0f3a 100%);
+  --bg-header: rgba(21, 11, 46, 0.8);
+  --bg-item: rgba(255, 255, 255, 0.03);
+  --bg-item-hover: rgba(255, 255, 255, 0.05);
+  --text-primary: #ffffff;
+  --text-secondary: #9ca3af;
+  --accent-color: #a855f7;
+  --border-subtle: rgba(255, 255, 255, 0.05);
+  --shadow-panel: -10px 0 40px rgba(0, 0, 0, 0.3);
+}
+
 .settings-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
   backdrop-filter: blur(4px);
@@ -16,13 +25,14 @@
   right: -400px;
   width: 400px;
   height: 100vh;
-  background: linear-gradient(135deg, #150b2e 0%, #1a0f3a 100%);
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-gradient); 
+  color: var(--text-primary);    
+  border-left: 1px solid var(--border-subtle);
   z-index: 1000;
-  transition: right 0.3s ease;
+  transition: right 0.3s ease, background 0.3s ease;
   display: flex;
   flex-direction: column;
-  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-panel);
 }
 
 .settings-panel.open {
@@ -31,75 +41,27 @@
 
 .settings-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; 
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  position: sticky;
-  top: 0;
-  background: rgba(21, 11, 46, 0.8);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-header);
   backdrop-filter: blur(10px);
 }
 
-.settings-header h3 {
-  margin: 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  color: #9ca3af;
-  cursor: pointer;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s;
-}
-
-.close-btn:hover {
-  color: white;
-}
-
-.settings-content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-}
-
-.settings-section {
-  margin-bottom: 24px;
-}
-
-.section-title {
-  margin: 0 0 12px 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: #9333ea;
-  letter-spacing: 0.5px;
-}
-
-/* Setting Item */
 .setting-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--bg-item);
   border-radius: 10px;
   margin-bottom: 8px;
   transition: all 0.3s;
 }
 
 .setting-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.setting-info {
-  flex: 1;
+  background: var(--bg-item-hover);
 }
 
 .setting-label {
@@ -108,20 +70,49 @@
   gap: 10px;
   font-weight: 600;
   margin-bottom: 4px;
-  color: white;
-}
-
-.setting-label svg {
-  color: #9333ea;
+  color: var(--text-primary);
 }
 
 .setting-description {
   margin: 0;
   font-size: 0.8rem;
-  color: #9ca3af;
+  color: var(--text-secondary);
 }
 
-/* Toggle Switch */
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.settings-content {
+  flex: 1;                
+  overflow-y: auto;       
+  padding: 24px 20px;     
+  display: flex;
+  flex-direction: column;
+  gap: 24px;              
+}
+
+.section-title {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+.setting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 .toggle-switch {
   position: relative;
   display: inline-block;
@@ -168,7 +159,6 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-/* Preference Group */
 .preference-group {
   display: flex;
   flex-direction: column;

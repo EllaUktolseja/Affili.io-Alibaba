@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MainLayout from './MainLayout';
 import MarketOverview from './MarketOverview';
 import Scanner from './Scanner';
@@ -11,23 +11,32 @@ function App() {
   const [currentTab, setCurrentTab] = useState<string>('Overview');
   const [showTrendDetail, setShowTrendDetail] = useState(false);
 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('selected-theme');
+    if (savedTheme === 'dark' || !savedTheme) {
+      document.body.classList.add('dark-theme');
+    } else {
+      document.body.classList.remove('dark-theme');
+    }
+  }, []);
+
   const renderContent = () => {
     if (showTrendDetail) {
       return <TrendAnalysisDetail onBack={() => setShowTrendDetail(false)} />;
     }
 
     switch (currentTab) {
-      case 'Overview': 
+      case 'Overview':
         return <MarketOverview />;
-      case 'Scanner': 
+      case 'Scanner':
         return <Scanner onViewTrendAnalysis={() => setShowTrendDetail(true)} />; // Pass callback
-      case 'Simulator': 
+      case 'Simulator':
         return <IncomeSimulator />;
-      case 'Alerts': 
+      case 'Alerts':
         return <AlertInsight />;
-      case 'Hashtags': 
+      case 'Hashtags':
         return <HashtagAnalysis />;
-      default: 
+      default:
         return <MarketOverview />;
     }
   };

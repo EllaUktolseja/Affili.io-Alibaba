@@ -105,7 +105,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, activeTab, setActiveT
           </div>
         </div>
         <div className="footer-bottom">
-          © 2026 TrendPulse AI by Team SYNC1. All rights reserved.
+          © 2026  Affili.io by Team SYNC1. All rights reserved.
         </div>
       </footer>
 
